@@ -1,0 +1,5 @@
+{
+  "component_name": "demo_component",
+  "api_version": "v47.0",
+  "apex_class": "/code/demoClass.apxc"
+}
