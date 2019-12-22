@@ -53,6 +53,16 @@ namespace github2org.com.Controllers
             return new JsonResult(new { Cool = true });
         }
 
+        public IActionResult Details()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
