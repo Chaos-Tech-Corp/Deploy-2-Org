@@ -5,11 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using github2org.com.Models;
+using deploy2.org.com.Models;
 
 using Microsoft.AspNetCore.Authentication;
 
-namespace github2org.com.Controllers
+namespace deploy2.org.com.Controllers
 {
     public class HomeController : Controller
     {
@@ -46,7 +46,7 @@ namespace github2org.com.Controllers
 
         public JsonResult CreateClass()
         {
-            github2org.com.Classes.github2org g2o = new github2org.com.Classes.github2org(sfTokenId ?? "", "v47.0", sfUrl ?? "",  ghTokenId, "Chaos-Tech-Corp", "Github-2-Org");
+            deploy2.org.com.Classes.DeployAssistant g2o = new deploy2.org.com.Classes.DeployAssistant(sfTokenId ?? "", "v47.0", sfUrl ?? "",  ghTokenId, "Chaos-Tech-Corp", "Github-2-Org");
 
             g2o.UploadComponent();
 

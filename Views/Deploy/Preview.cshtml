@@ -1,0 +1,28 @@
+﻿@model deploy2.org.com.Classes.ConfigurationFile
+@{
+    ViewData["Title"] = "Deploy 2 Org";
+}
+
+<div class="row">
+    <div class="col-sm">
+        <h1 class="font-weight-light">Preview Package</h1>
+
+        <div id="model-details">
+            <p>Validating ...</p>
+        </div>
+
+        
+        
+
+    </div>
+    <div class="col-sm">
+    </div>
+</div>
+
+@section scripts  {
+<script>
+    $(function () {
+        $("#model-details").load("/deploy/validate");
+    });
+</script>
+}

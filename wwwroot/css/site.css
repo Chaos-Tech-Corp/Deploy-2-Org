@@ -73,3 +73,58 @@ body {
 .navbar-brand img {
     max-height:48px;
 }
+
+
+.form-element {
+    flex-basis: 0%;
+    margin-bottom: 0;
+    position: relative;
+    min-width: 0;
+}
+
+.form-element_stacked {
+    width: 100%;
+    flex-basis: 100%;
+    padding: 0 .25rem;
+    margin-bottom: .5rem;
+    display: block;
+}
+
+.form-element_label {
+    margin-bottom: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    display: inline-block;
+    color: #3e3e3c;
+    font-size: .75rem;
+    padding-right: .5rem;
+    padding-top: .25rem;
+    margin-bottom: .125rem;
+}
+
+.form-element_control {
+    padding-top: .125rem;
+    padding-bottom: .125rem;
+    clear: left;
+    position: relative;
+    border-bottom: 1px solid #dddbda;
+}
+
+.form-element_static {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    display: inline-block;
+    font-size: .875rem;
+    font-weight: 400;
+    color: #080707;
+    width: 100%;
+}
+
+.form-element_error {
+    color: #c23934;
+    font-size: .75rem;
+    margin-top: .125rem;
+    display: block;
+}

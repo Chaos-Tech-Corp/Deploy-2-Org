@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace github2org.com.Extensions
+namespace deploy2.org.com.Extensions
 {
     public static class HttpContextExtensions
     {

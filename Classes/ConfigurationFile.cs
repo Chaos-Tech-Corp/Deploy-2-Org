@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace github2org.com.Classes
+namespace deploy2.org.com.Classes
 {
     public class ConfigurationFile
     {
         public string component_name { get; set; }
         public string api_version { get; set; }
-        public string apex_class { get; set; }
+        public List<string> apex_class { get; set; }
         public Bundle_Details bundle_details { get; set; }
     }
 
@@ -24,5 +24,20 @@ namespace github2org.com.Classes
         public string design { get; set; }
         public string svg { get; set; }
 
+    }
+
+    public class ConfigurationModel
+    {
+        public string ComponentName { get; set; }
+        public string APIVersion { get; set; }
+        public List<GithubFile> ApexClass { get; set; }
+        public GithubFile Component { get; set; }
+        public GithubFile Controller { get; set; }
+        public GithubFile Helper { get; set; }
+        public GithubFile Style { get; set; }
+        public GithubFile Documentation { get; set; }
+        public GithubFile Renderer { get; set; }
+        public GithubFile Design { get; set; }
+        public GithubFile SVG { get; set; }
     }
 }

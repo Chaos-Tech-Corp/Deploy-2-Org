@@ -1,6 +1,6 @@
 using System;
 
-namespace github2org.com.Models
+namespace deploy2.org.com.Models
 {
     public class ErrorViewModel
     {

@@ -6,8 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
+using System;
 
-namespace github2org.com
+namespace deploy2.org.com
 {
     public class Startup
     {
@@ -47,6 +48,18 @@ namespace github2org.com
                 options.SaveTokens = true;
             });
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".deploy2.org";
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +86,8 @@ namespace github2org.com
             };
             app.UseStaticFiles(options);
 
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -84,6 +99,7 @@ namespace github2org.com
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }
