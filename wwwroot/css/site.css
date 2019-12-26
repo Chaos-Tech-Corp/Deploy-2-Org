@@ -118,6 +118,52 @@ code, pre, tt {
     word-wrap: normal;
 }
 
+.markdown-body ol, .markdown-body ul {
+    padding-left: 2em;
+}
+
+.markdown-body li {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.markdown-body blockquote, .markdown-body details, .markdown-body dl, .markdown-body ol, .markdown-body p, .markdown-body pre, .markdown-body table, .markdown-body ul {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.markdown-body {
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+    .markdown-body table {
+        display: block;
+        width: 100%;
+        overflow: auto;
+    }
+
+        .markdown-body table tr {
+            background-color: #fff;
+            border-top: 1px solid #c6cbd1;
+        }
+
+        .markdown-body table td, .markdown-body table th {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        .markdown-body table th {
+            font-weight: 600;
+        }
+
+        .markdown-body table td, .markdown-body table th {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
 .form-element {
     flex-basis: 0%;
     margin-bottom: 0;

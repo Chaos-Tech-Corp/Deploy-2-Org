@@ -4,23 +4,44 @@
 
 <div class="row">
     <div class="col-sm">
-        <h1 class="font-weight-light">About</h1>
+        <div class="markdown-body">
+            <h1 class="font-weight-light">About</h1>
 
-        <p>
-            <b>deploy2.org</b> is a tool that help you deploy an application or component to your Salesforce Org directly from Github.
-            When you login with your Salesforce credentials, you generate an access token that is used to create the components in your Salesofrce Org.
-            This access token is only used during the deployment process and is stored in a browser cookie; it is not stored anywhere else.
-        </p>
+            <p>
+                <code>deploy2.org</code> is a tool that help you deploy an application or component to your Salesforce Org directly from GitHub.
+                When you login with your Salesforce and GitHub credentials, you generate an access token that is used to create the components in your Salesofrce Org.
+                This access token is only used during the deployment process and is stored in a browser cookie; it is not stored anywhere else.
+            </p>
 
-        <p>This project is inspired by <a href="https://deploy-to-sfdx.com/">Deploy to Salesofrce DX</a> project. We created it initially to deploy our own components from our <a href="https://github.com/Chaos-Tech-Corp" target="_blank">Github Repositories</a> but opened it now to the public.</p>
+            <p>This project is inspired by the <a href="https://deploy-to-sfdx.com/" target="_blank">Deploy to Salesofrce DX</a> project. We created it initially to deploy our own components from our <a href="https://github.com/Chaos-Tech-Corp" target="_blank">Github Repositories</a> but opened it now to the public.</p>
 
-        <p>There is no official support, but you can log and issue at <a href="https://github.com/Chaos-Tech-Corp/Deploy-2-Org/issues" target="_blank">https://github.com/Chaos-Tech-Corp/Deploy-2-Org/issues</a>. While every effort is made to ensure it operates without error, please <b>use at your own risk</b>.</p>
+            <p>There is no official support, but you can log and issue at <a href="https://github.com/Chaos-Tech-Corp/Deploy-2-Org/issues" target="_blank">https://github.com/Chaos-Tech-Corp/Deploy-2-Org/issues</a>. While every effort is made to ensure it operates without error, please <b>use at your own risk</b>.</p>
 
-        <h2 class="font-weight-light">Want to try your own repo?</h2>
+            <h2 class="font-weight-light">How it works?</h2>
 
-        <p>Just add the [] button. <a href="/home/details">Learn more</a>.</p>
+            <p>In a few words: it acts as an intermediary between your GitHub repository and your Salesforce Org.</p>
+            <p>The service reads the <code>.deploy2org.json</code> file of te repository to identify the Component details:</p>
+            <ul>
+                <li><code>component_name</code>: Component Name</li>
+                <li><code>api_version</code>: API Version the Component uses</li>
+                <li><code>apex_class</code>: List of all Apex Classes required</li>
+                <li><code>bundle_details</code>: Defines the different files that forms the Lightning Component
+                    <ul>
+                        <li><code>component</code>:  Path to the Component file. Contains markup for the component.</li>
+                        <li><code>controller</code>: Path to the Controller file. Contains client-side controller methods to handle events in the component.</li>
+                        <li><code>helper</code>:  Path to the Helper file. JavaScript functions that can be called from any JavaScript code in a component’s bundle.</li>
+                        <li><code>style</code>:  Path to the Stylesheet file. Contains styles for the component.</li>
+                        <li><code>documentation</code>:  Path to the Documentation file. A description, sample code, and one or multiple references to example components.</li>
+                        <li><code>renderer</code>:  Path to the Component File. Client-side renderer to override default rendering for a component..</li>
+                        <li><code>design</code>:  	Path to the Component File. File required for components used in Lightning App Builder, Lightning pages, Community Builder, or Flow Builder.</li>
+                        <li><code>svg</code>:  Path to the Component File. Custom icon resource for components used in the Lightning App Builder or Community Builder.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>All resources in the component bundle should follow the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_bundle.htm" target="_blank">naming convention</a> and are auto-wired. For example, a controller <code>[componentName]Controller.js</code> is auto-wired to its component, which means that you can use the controller within the scope of that component.</p>
+            <p>The tool will use the <code>Component Name</code> value to generate the bundle and all files within it regardless of the original file names.</p>
 
+        </div>
     </div>
-    <div class="col-sm">
-    </div>
+    
 </div>
