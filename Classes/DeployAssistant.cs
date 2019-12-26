@@ -87,8 +87,14 @@ namespace deploy2.org.com.Classes
         public ConfigurationFile RetrieveGithubConfig()
         {
             var githubConfigFile = RetrieveRepositoryFile(_ghOrg, _ghRepo, ".deploy2org.json");
-
-            return JsonSerializer.Deserialize<ConfigurationFile>(githubConfigFile.fileContent());
+            if (githubConfigFile.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new HttpRequestException(githubConfigFile.StatusCode.ToString());
+            } else { 
+                var cFile = JsonSerializer.Deserialize<ConfigurationFile>(githubConfigFile.fileContent());
+                cFile.fileContent = githubConfigFile.fileContent();
+                return cFile;
+            }
         }
 
         public ConfigurationModel Validate(ConfigurationFile ConfigFile)
@@ -153,21 +159,29 @@ namespace deploy2.org.com.Classes
 
         private GithubFile RetrieveRepositoryFile(string url)
         {
+
+            GithubFile ghFile = new GithubFile();
+
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Deploy2Org");
-            client.DefaultRequestHeaders.Add("Authorization", "token " + _ghToken);
+            if (!string.IsNullOrEmpty(_ghToken))
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "token " + _ghToken);
+            }
 
             var response = client.GetAsync("https://api.github.com/repos/" + url).Result;
             var serializer = new DataContractJsonSerializer(typeof(GithubFile));
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return JsonSerializer.Deserialize<GithubFile>(response.Content.ReadAsStringAsync().Result);
+                ghFile = JsonSerializer.Deserialize<GithubFile>(response.Content.ReadAsStringAsync().Result);
             }
+            ghFile.StatusCode = response.StatusCode;
+            ghFile.ResponseBody = response.Content.ReadAsStringAsync().Result;
 
-            return null;
+            return ghFile;
             
         }
     }

@@ -25,41 +25,51 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="https://kit.fontawesome.com/e505160679.js" crossorigin="anonymous"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!--<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149746338-2"></script>-->
+    <!--<script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'UA-149746338-2');</script>-->
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/deploy-icon.png" /> deploy2.org</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1 flex-row-reverse">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>
+    <div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/deploy-icon.png" /> deploy2.org</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav flex-grow-1 flex-row-reverse">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/about">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/deploy/tryme">Try me</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/">Home</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-            @RenderBody()
-    </div>
-
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container text-center small">
-            Written and shared by <a href="https://chaostechcorp.com" target="_blank">Chaos Tech Corp.</a> under GNU General Public License v3.0 and available at <a href="https://github.com/Chaos-Tech-Corp/Deploy-2-Org" target="_blank">https://github.com/Chaos-Tech-Corp/Deploy-2-Org</a>.
+            </nav>
+        </header>
+        <div class="container">
+            <main role="main">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+
+        <footer class="border-top footer text-muted mt-4">
+            <div class="container text-center small">
+                Written and shared by <a href="https://chaostechcorp.com" target="_blank">Chaos Tech Corp.</a> under GNU General Public License v3.0 and available at <a href="https://github.com/Chaos-Tech-Corp/Deploy-2-Org" target="_blank">https://github.com/Chaos-Tech-Corp/Deploy-2-Org</a>.
+            </div>
+        </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

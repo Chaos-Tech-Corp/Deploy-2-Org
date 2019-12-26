@@ -25,7 +25,8 @@
                 <li><code>component_name</code>: Component Name</li>
                 <li><code>api_version</code>: API Version the Component uses</li>
                 <li><code>apex_class</code>: List of all Apex Classes required</li>
-                <li><code>bundle_details</code>: Defines the different files that forms the Lightning Component
+                <li>
+                    <code>bundle_details</code>: Defines the different files that forms the Lightning Component
                     <ul>
                         <li><code>component</code>:  Path to the Component file. Contains markup for the component.</li>
                         <li><code>controller</code>: Path to the Controller file. Contains client-side controller methods to handle events in the component.</li>
@@ -40,6 +41,13 @@
             </ul>
             <p>All resources in the component bundle should follow the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_bundle.htm" target="_blank">naming convention</a> and are auto-wired. For example, a controller <code>[componentName]Controller.js</code> is auto-wired to its component, which means that you can use the controller within the scope of that component.</p>
             <p>The tool will use the <code>Component Name</code> value to generate the bundle and all files within it regardless of the original file names.</p>
+
+            <h2 class="font-weight-light">What happens next?</h2>
+            <p>The solution will use the Salesforce API to connect to your Org and create the component.</p>
+            <ol>
+                <li>Create all the Apex Classes</li>
+                <li>Generate a <a href="https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_composite.htm">Composite Request</a> to upload the Lightning Component Bundle</li>
+            </ol>
 
         </div>
     </div>

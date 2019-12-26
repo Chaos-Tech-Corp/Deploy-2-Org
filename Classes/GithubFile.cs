@@ -8,6 +8,9 @@ namespace deploy2.org.com.Classes
 {
     public class GithubFile
     {
+        public string ResponseBody { get; set; }
+        public System.Net.HttpStatusCode StatusCode { get; set; }
+
         public string name { get; set; }
         public string path { get; set; }
         public string sha { get; set; }
@@ -22,7 +25,7 @@ namespace deploy2.org.com.Classes
         public GithubLinks _links { get; set; }
         public string fileContent()
         {
-            return Encoding.UTF8.GetString(Convert.FromBase64String(content));
+            return Encoding.UTF8.GetString(Convert.FromBase64String(content)).Trim();
         }
     }
 }

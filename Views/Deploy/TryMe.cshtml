@@ -1,0 +1,193 @@
+﻿@model deploy2.org.com.Classes.ConfigurationFile
+@{
+    string template = ViewBag.template ?? string.Empty;
+    int ix = 0;
+}
+
+<div class="row">
+    <div class="col-sm">
+
+        <div class="markdown-body">
+
+            <h1 class="font-weight-light">Try Me</h1>
+
+            @if (Model == null)
+            {
+                <form method="post">
+                    <h5>1. Introduce the Repository URL that contains the Lightning Component</h5>
+                    <div class="form-element form-element_readonly form-element_stacked">
+                        <span class="form-element_label">Full Repository URL</span>
+                        <div class="form-element_control">
+                            <input type="text" name="template" placeholder="https://github.com/Chaos-Tech-Corp/Input-Field-Lookup" class="form-input" value="@template" />
+                        </div>
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="form-element_error">@ViewBag.Error</div>
+                        }
+
+                        <div class="mt-2">
+                            <button class="btn btn-primary" id="bn-submit">Retrieve</button>
+                            <button class="btn btn-primary" disabled style="display:none;">
+                                <div class="spinner-border spinner-border-sm text-light" role="status"></div>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="random" value="" />
+                </form>
+            }
+            else
+            {
+                <h5>2. Lightning Component Preview</h5>
+                <div class="row">
+                    <div class="col-sm">
+                        <h6>Component Details</h6>
+
+                        <div class="mt-2 mb-2">
+                            <dl class="row">
+                                <dt class="col-sm-4">Component Name:</dt>
+                                <dd class="col-sm-8">@Model.component_name</dd>
+
+                                <dt class="col-sm-4">API Version:</dt>
+                                <dd class="col-sm-8">@Model.api_version</dd>
+
+                                @foreach (var cName in Model.apex_class)
+                                {
+                                    ix++;
+                                    <dt class="col-sm-4">Apex Class @ix:</dt>
+                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(cName))</dd>
+                                    <dt class="col-sm-1" id="apex-@ix"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+
+                            </dl>
+                            <h6>Component Bundle</h6>
+                            <dl class="row">
+                                <dt class="col-sm-4">Component:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.component ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.component))
+                                {
+                                    <dt class="col-sm-1" id="bndl-component"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"><i class="fal fa-times-circle text-danger"></i></dt>
+                                }
+
+                                <dt class="col-sm-4">Controller:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.controller ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.controller))
+                                {
+                                    <dt class="col-sm-1" id="bndl-controller"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+
+                                <dt class="col-sm-4">Helper:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.helper ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.helper))
+                                {
+                                    <dt class="col-sm-1" id="bndl-helper"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+
+                                <dt class="col-sm-4">Style:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.style ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.style))
+                                {
+                                    <dt class="col-sm-1" id="bndl-style"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+
+                                <dt class="col-sm-4">Documentation:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.documentation ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.documentation))
+                                {
+                                    <dt class="col-sm-1" id="bndl-documentation"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+
+                                <dt class="col-sm-4">Renderer:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.renderer ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.renderer))
+                                {
+                                    <dt class="col-sm-1" id="bndl-renderer"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+
+                                <dt class="col-sm-4">Design:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.design ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.design))
+                                {
+                                    <dt class="col-sm-1" id="bndl-design"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+
+                                <dt class="col-sm-4">SVG:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.svg ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.svg))
+                                {
+                                    <dt class="col-sm-1" id="bndl-svg"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                }
+                                else
+                                {
+                                    <dt class="col-sm-1"></dt>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        Review <code>.deploy2org.json</code>
+                        <div class="mt-2 mb-2">
+                            <pre>@Model.fileContent</pre>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="bn-deploy" disabled>Deploy</button>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts  {
+    <script>
+        $(function () {
+            var ix = @ix;
+            $("input[name='random']").val(new Date().getTime());
+            $("#bn-submit").on("click", function () {
+                $(this).hide().siblings().show();
+                $("form .form-element_error").remove();
+            });
+
+            $.post('/deploy/validate', function (r) {
+                for (var i = 1; i <= ix; i++) {
+                    $("#apex-" + i).html((r.apex_class && r.apex_class[i-1] == 'ok') ? '<i class="fal fa-check-circle text-success"></i>' : '<i class="fal fa-times-circle text-danger"></i>');
+                }
+                if (r.bundle_details != null) {
+                    
+                    $.each($("[id^='bndl']"), function (ix, il) {
+                        debugger;
+                        var t = $(il),
+                            id = t.attr("id").split("-")[1];
+                        t.html(r.bundle_details[id] == 'ok' ? '<i class="fal fa-check-circle text-success"></i>' : '<i class="fal fa-times-circle text-danger"></i>');
+                    });
+                }
+            });
+        });
+    </script>
+}

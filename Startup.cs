@@ -96,8 +96,14 @@ namespace deploy2.org.com
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "deploy",
+                    pattern: "deploy/{action}/{id?}",
+                    defaults: new { controller = "Deploy", action = "Index" });
+
+                endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
             });
 
         }

@@ -52,12 +52,20 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+body > div {
+    min-height: 100vh; /* will cover the 100% of viewport */
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding-bottom: 65px; /* height of your footer */
+}
+
 .footer {
-  width: 100%;
-  line-height:24px;
-  padding:8px 0;
+    width: 100%;
+    line-height: 24px;
+    padding: 8px 0;
+    position: absolute;
+    bottom: 0;
 }
 
 .navbar-brand img {
@@ -191,6 +199,19 @@ code, pre, tt {
     padding-right: .5rem;
     padding-top: .25rem;
     margin-bottom: .125rem;
+}
+
+.form-input {
+    background-color: #fff;
+    border: 1px solid #dddbda;
+    border-radius: .25rem;
+    width: 100%;
+    transition: border .1s linear,background-color .1s linear;
+    display: inline-block;
+    padding: 0 1rem 0 .75rem;
+    line-height: 1.875rem;
+    min-height: calc(1.875rem + 2px);
+}
 }
 
 .form-element_control {
@@ -361,5 +382,3 @@ code, pre, tt {
         font-size: 42px;
     }
 }
-
-

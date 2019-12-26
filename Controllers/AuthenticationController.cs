@@ -11,7 +11,7 @@ namespace deploy2.org.com.Controllers
     {
 
         [HttpGet("~/signin-gh")]
-        public async Task<IActionResult> SignIn()
+        public async Task<IActionResult> SignIn(string redirect)
         {
             string provider = "GitHub";
 
@@ -23,32 +23,32 @@ namespace deploy2.org.com.Controllers
             // Instruct the middleware corresponding to the requested external identity
             // provider to redirect the user agent to its own authorization endpoint.
             // Note: the authenticationScheme parameter must match the value configured in Startup.cs
-            return Challenge(new AuthenticationProperties { RedirectUri = "/deploy/preview" }, provider);
+            return Challenge(new AuthenticationProperties { RedirectUri = redirect ?? "/" }, provider);
         }
 
         //[HttpGet("~/signin")]
         //public async Task<IActionResult> SignIn() => View("SignIn", await HttpContext.GetExternalProvidersAsync());
 
-        [HttpPost("~/signin")]
-        public async Task<IActionResult> SignIn([FromForm] string provider)
-        {
-            // Note: the "provider" parameter corresponds to the external
-            // authentication provider choosen by the user agent.
-            if (string.IsNullOrWhiteSpace(provider))
-            {
-                return BadRequest();
-            }
+        //[HttpPost("~/signin")]
+        //public async Task<IActionResult> SignIn([FromForm] string provider)
+        //{
+        //    // Note: the "provider" parameter corresponds to the external
+        //    // authentication provider choosen by the user agent.
+        //    if (string.IsNullOrWhiteSpace(provider))
+        //    {
+        //        return BadRequest();
+        //    }
 
-            if (!await HttpContext.IsProviderSupportedAsync(provider))
-            {
-                return BadRequest();
-            }
+        //    if (!await HttpContext.IsProviderSupportedAsync(provider))
+        //    {
+        //        return BadRequest();
+        //    }
 
-            // Instruct the middleware corresponding to the requested external identity
-            // provider to redirect the user agent to its own authorization endpoint.
-            // Note: the authenticationScheme parameter must match the value configured in Startup.cs
-            return Challenge(new AuthenticationProperties { RedirectUri = "/" }, provider);
-        }
+        //    // Instruct the middleware corresponding to the requested external identity
+        //    // provider to redirect the user agent to its own authorization endpoint.
+        //    // Note: the authenticationScheme parameter must match the value configured in Startup.cs
+        //    return Challenge(new AuthenticationProperties { RedirectUri = "/" }, provider);
+        //}
 
         [HttpGet("~/signout"), HttpPost("~/signout")]
         public IActionResult SignOut()

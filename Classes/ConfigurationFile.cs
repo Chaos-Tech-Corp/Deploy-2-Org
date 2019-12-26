@@ -11,6 +11,7 @@ namespace deploy2.org.com.Classes
         public string api_version { get; set; }
         public List<string> apex_class { get; set; }
         public Bundle_Details bundle_details { get; set; }
+        public string fileContent { get; set; }
     }
 
     public class Bundle_Details
