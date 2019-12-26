@@ -4,7 +4,52 @@
 
     <div class="jumbotron">
         <h1 class="text-center font-weight-light">Deploy Lightning Components to your Salesforce Org</h1>
+        <hr class="my-4">
+        <div class="d-flex justify-content-around align-items-center">
+            <span class="icon-home"><i class="fab fa-github" style="color:#4078c0"></i></span>
+
+            <span class='the-arrow -right'>
+                <span class='shaft'></span>
+            </span>
+
+            <span class="icon-home"><i class="fad fa-rocket-launch" style="color:#4078c0"></i></span>
+
+            <span class='the-arrow -right'>
+                <span class='shaft'></span>
+            </span>
+
+            <span class="icon-home"><i class="fab fa-salesforce" style="color:#21a0df"></i></span>
+        </div>
     </div>
+
+    <div class="markdown-body">
+        <h2>GitHub</h2>
+        <p>To use the service you need to include the <img src="~/dist/deploy2org.svg" /> button in your <code>README</code> file and the create a <code>.deploy2org.json</code> file in the root folder of your repository.</p>
+        <p>1. Add the following code to your <code>README</code>:</p>
+        <pre>[![Deploy](https://deploy2.org/dist/deploy2org.svg)](https://deploy2.org)</pre>
+        <p>If you want to use the button from outside of your GitHub repository, include the path to your repository as follows:</p>
+        <pre>[![Deploy](https://deploy2.org/dist/DeployToSFDX.svg)](https://deploy2.org?template=Chaos-Tech-Corp/Input-Field-Lookup)</pre>
+        <p>2. Create a <code>.deploy2org.json</code> file:</p>
+        <pre>
+{
+    "component_name": "lookupField",
+    "api_version": "v47.0",
+    "apex_class": ["/src/lookupfieldController.apxc"],
+    "bundle_details": {
+        "component": "/src/lookupField.cmp",
+        "controller": "/src/lookupField.js",
+        "helper": "/src/lookupField.helper",
+        "style": "/src/lookupField.css",
+        "documentation": null,
+        "renderer": null,
+        "design": null, 
+        "svg": null
+    }
+}
+        </pre>
+    </div>
+
+
 
         <div class="jumbotron">
             @if (User?.Identity?.IsAuthenticated ?? false)

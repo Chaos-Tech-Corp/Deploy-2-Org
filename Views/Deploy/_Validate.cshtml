@@ -24,16 +24,16 @@
 
         @foreach (string className in Model.configurationFile.apex_class)
         {
-        <div class="form-element form-element_readonly form-element_stacked">
-            <span class="form-element_label">Apex Class</span>
-            <div class="form-element_control">
-                <div class="form-element_static">@className</div>
+            <div class="form-element form-element_readonly form-element_stacked">
+                <span class="form-element_label">Apex Class</span>
+                <div class="form-element_control">
+                    <div class="form-element_static">@className</div>
+                </div>
+                @if (!Model.configurationModel.ApexClass.Any(A => A != null && A.name == className))
+                {
+                    <div class="form-element_error">Couldn't retrieve the file.</div>
+                }
             </div>
-            @if (!Model.configurationModel.ApexClass.Any( A => A != null && A.name == className))
-            {
-                <div class="form-element_error">Couldn't retrieve the file.</div>
-            }
-        </div>
         }
         @if (Model.configurationFile.bundle_details != null)
         {
@@ -53,6 +53,16 @@
 
             @if (!string.IsNullOrEmpty(Model.configurationFile.bundle_details.controller))
             {
+                <div class="form-element form-element_readonly form-element_stacked">
+                    <span class="form-element_label">Controller</span>
+                    <div class="form-element_control">
+                        <div class="form-element_static">@Model.configurationFile.bundle_details.component</div>
+                    </div>
+                    @if (Model.configurationModel.Component == null)
+                    {
+                        <div class="form-element_error">Couldn't retrieve the file.</div>
+                    }
+                </div>
                 <div class="form-element form-element_readonly form-element_stacked">
                     <span class="form-element_label">Controller</span>
                     <div class="form-element_control">
