@@ -10,6 +10,11 @@
             $.each($("[id^='apex-']"), function (ix, il) {
                 $(il).html((r.apex_class && r.apex_class[ix] == 'ok') ? '<i class="fal fa-check-circle text-success"></i>' : '<i class="fal fa-times-circle text-danger"></i>');
             });
+
+            $.each($("[id^='event-']"), function (ix, il) {
+                $(il).html((r.events && r.events[ix] == 'ok') ? '<i class="fal fa-check-circle text-success"></i>' : '<i class="fal fa-times-circle text-danger"></i>');
+            });
+
             if (r.bundle_details != null) {
 
                 $.each($("[id^='bndl']"), function (ix, il) {

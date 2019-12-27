@@ -14,157 +14,168 @@
 
             @if (Model == null)
             {
-                <form method="post" id="form-retrieve">
-                    <h5>1. Enter the Repository URL that contains the Lightning Component</h5>
-                    <div class="form-element form-element_readonly form-element_stacked">
-                        <span class="form-element_label">Full Repository URL</span>
-                        <div class="form-element_control">
-                            <input type="text" name="template" placeholder="https://github.com/Chaos-Tech-Corp/Input-Field-Lookup" class="form-input" value="@template" />
-                        </div>
-                        @if (ViewBag.Error != null)
+            <form method="post" id="form-retrieve">
+                <h5>1. Enter the Repository URL that contains the Lightning Component</h5>
+                <div class="form-element form-element_readonly form-element_stacked">
+                    <span class="form-element_label">Full Repository URL</span>
+                    <div class="form-element_control">
+                        <input type="text" name="template" placeholder="https://github.com/Chaos-Tech-Corp/Input-Field-Lookup" class="form-input" value="@template" />
+                    </div>
+                    @if (ViewBag.Error != null)
                         {
-                            <div class="form-element_error">@ViewBag.Error</div>
+                    <div class="form-element_error">@ViewBag.Error</div>
                         }
 
-                        <div class="mt-2">
-                            <button class="btn btn-primary" id="bn-submit">Retrieve</button>
-                            <button class="btn btn-primary" disabled style="display:none;">
-                                <div class="spinner-border spinner-border-sm text-light" role="status"></div>
-                            </button>
-                        </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary" id="bn-submit">Retrieve</button>
+                        <button class="btn btn-primary" disabled style="display:none;">
+                            <div class="spinner-border spinner-border-sm text-light" role="status"></div>
+                        </button>
                     </div>
-                    <input type="hidden" name="random" value="" />
-                </form>
+                </div>
+                <input type="hidden" name="random" value="" />
+            </form>
             }
             else
             {
-                <form method="post" action="deploy" id="form-deploy">
-                    <h5>2. Lightning Component Preview</h5>
-                    <div class="row">
-                        <div class="col-sm">
-                            <h6>Component Details</h6>
+            <form method="post" action="deploy" id="form-deploy">
+                <h5>2. Lightning Component Preview</h5>
+                <div class="row">
+                    <div class="col-sm">
+                        <h6>Component Details</h6>
 
-                            <div class="mt-2 mb-2" id="cmp-details">
-                                <dl class="row">
-                                    <dt class="col-sm-4">Component Name:</dt>
-                                    <dd class="col-sm-8">@Model.component_name</dd>
+                        <div class="mt-2 mb-2" id="cmp-details">
+                            <dl class="row">
+                                <dt class="col-sm-4">Component Name:</dt>
+                                <dd class="col-sm-8">@Model.component_name</dd>
 
-                                    <dt class="col-sm-4">API Version:</dt>
-                                    <dd class="col-sm-8">@Model.api_version</dd>
-                                    @if (Model.apex_class != null)
-                                    {
-                                    @foreach (var cName in Model.apex_class)
+                                <dt class="col-sm-4">API Version:</dt>
+                                <dd class="col-sm-8">@Model.api_version</dd>
+                                @if (Model.apex_class != null) {
+                                    foreach (var cName in Model.apex_class)
                                     {
                                         ix++;
-                                        <dt class="col-sm-4">Apex Class @ix:</dt>
-                                        <dd class="col-sm-7">@(System.IO.Path.GetFileName(cName))</dd>
-                                        <dt class="col-sm-1" id="apex-@ix"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-4">Apex Class @ix:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(cName))</dd>
+                                <dt class="col-sm-1" id="apex-@ix"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
-                                    }
-                                </dl>
-                                <h6>Component Bundle</h6>
-                                <dl class="row">
-                                    <dt class="col-sm-4">Component:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.component ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.component))
+                                }
+
+                                @if (Model.events != null) {
+                                    ix= 0;
+                                    foreach (var cName in Model.events)
                                     {
-                                        <dt class="col-sm-1" id="bndl-component"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                        ix++;
+                                <dt class="col-sm-4">Lightning Event @ix:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(cName))</dd>
+                                <dt class="col-sm-1" id="event-@ix"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                    }
+                                }
+
+                            </dl>
+                            <h6>Component Bundle</h6>
+                            <dl class="row">
+                                <dt class="col-sm-4">Component:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.component ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.component))
+                                    {
+                                <dt class="col-sm-1" id="bndl-component"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"><i class="fal fa-times-circle text-danger"></i></dt>
+                                <dt class="col-sm-1"><i class="fal fa-times-circle text-danger"></i></dt>
                                     }
 
-                                    <dt class="col-sm-4">Controller:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.controller ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.controller))
+                                <dt class="col-sm-4">Controller:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.controller ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.controller))
                                     {
-                                        <dt class="col-sm-1" id="bndl-controller"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-controller"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
 
-                                    <dt class="col-sm-4">Helper:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.helper ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.helper))
+                                <dt class="col-sm-4">Helper:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.helper ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.helper))
                                     {
-                                        <dt class="col-sm-1" id="bndl-helper"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-helper"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
 
-                                    <dt class="col-sm-4">Style:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.style ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.style))
+                                <dt class="col-sm-4">Style:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.style ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.style))
                                     {
-                                        <dt class="col-sm-1" id="bndl-style"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-style"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
 
-                                    <dt class="col-sm-4">Documentation:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.documentation ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.documentation))
+                                <dt class="col-sm-4">Documentation:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.documentation ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.documentation))
                                     {
-                                        <dt class="col-sm-1" id="bndl-documentation"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-documentation"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
 
-                                    <dt class="col-sm-4">Renderer:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.renderer ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.renderer))
+                                <dt class="col-sm-4">Renderer:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.renderer ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.renderer))
                                     {
-                                        <dt class="col-sm-1" id="bndl-renderer"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-renderer"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
 
-                                    <dt class="col-sm-4">Design:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.design ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.design))
+                                <dt class="col-sm-4">Design:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.design ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.design))
                                     {
-                                        <dt class="col-sm-1" id="bndl-design"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-design"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
 
-                                    <dt class="col-sm-4">SVG:</dt>
-                                    <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.svg ?? "-"))</dd>
-                                    @if (!string.IsNullOrEmpty(Model.bundle_details.svg))
+                                <dt class="col-sm-4">SVG:</dt>
+                                <dd class="col-sm-7">@(System.IO.Path.GetFileName(Model.bundle_details.svg ?? "-"))</dd>
+                                @if (!string.IsNullOrEmpty(Model.bundle_details.svg))
                                     {
-                                        <dt class="col-sm-1" id="bndl-svg"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
+                                <dt class="col-sm-1" id="bndl-svg"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
                                     else
                                     {
-                                        <dt class="col-sm-1"></dt>
+                                <dt class="col-sm-1"></dt>
                                     }
-                                </dl>
-                            </div>
-                        </div>
-                        <div class="col-sm">
-                            Review <code>.deploy2org.json</code>
-                            <div class="mt-2 mb-2">
-                                <pre>@Model.fileContent</pre>
-                            </div>
+                            </dl>
                         </div>
                     </div>
-                    <input type="hidden" name="environment" value="test"  id="input-environment"/>
-                    @*<button class="btn btn-primary" id="bn-deploy-prod" disabled>Production Deploy</button>*@
-                    <button class="btn btn-primary" id="bn-deploy-test" disabled>Sandbox Deploy</button>
-                </form>
+                    <div class="col-sm">
+                        Review <code>.deploy2org.json</code>
+                        <div class="mt-2 mb-2">
+                            <pre>@Model.fileContent</pre>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="environment" value="test" id="input-environment" />
+                @*<button class="btn btn-primary" id="bn-deploy-prod" disabled>Production Deploy</button>*@
+                <button class="btn btn-primary" id="bn-deploy-test" disabled>Sandbox Deploy</button>
+            </form>
             }
         </div>
     </div>

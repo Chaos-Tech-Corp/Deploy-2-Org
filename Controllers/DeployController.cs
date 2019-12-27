@@ -178,6 +178,24 @@ namespace deploy2.org.com.Controllers
                 }
             }
 
+
+            if (existing_details.configurationFile.events != null)
+            {
+                diff.events = new List<string>();
+                foreach (var eName in existing_details.configurationFile.events)
+                {
+                    if (componentModel.Events != null && componentModel.Events.Any(C => eName.ToLower().EndsWith(C.path.ToLower())))
+                    {
+                        diff.events.Add("ok");
+                    }
+                    else
+                    {
+                        diff.events.Add("error");
+                    }
+
+                }
+            }
+
             if (existing_details.configurationFile.bundle_details != null) {
                 diff.bundle_details = new Bundle_Details();
                 diff.bundle_details.component = (existing_details.configurationFile.bundle_details.component != null && componentModel.Component != null && existing_details.configurationFile.bundle_details.component.ToLower().EndsWith(componentModel.Component.path.ToLower())) ? "ok" : "error";
@@ -247,6 +265,10 @@ namespace deploy2.org.com.Controllers
                 else if (type == "bundle")
                 {
                     result = deploy.UploadComponent(details.configurationModel);
+                }
+                else if (type == "event")
+                {
+                    result = deploy.CreateEvents(details.configurationModel);
                 }
             } catch(Exception ex)
             {

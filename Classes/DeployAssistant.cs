@@ -45,6 +45,65 @@ namespace deploy2.org.com.Classes
             _ghRepo = ghRepos;
         }
 
+        public SalesforceResult CreateEvents(ConfigurationModel model)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("User-Agent", "Deploy2Org");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + _sfToken);
+
+            var compositeRequest = new SalesforceCompositeRequest()
+            {
+                allOrNone = true,
+                compositeRequest = new List<CompositeSubrequest>()
+            };
+
+            int ix = 0;
+
+            foreach (var eItem in model.Events)
+            {
+                ix++;
+                string eventName = System.IO.Path.GetFileNameWithoutExtension(eItem.name);
+                var bundleBody = new AuraDefinitionBundle()
+                {
+                    ApiVersion = Double.Parse(model.APIVersion.Replace("v", "")),
+                    Description = eventName,
+                    DeveloperName = eventName,
+                    MasterLabel = eventName
+                };
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = bundleBody,
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinitionBundle/",
+                    referenceId = "aura_bundle_" + ix
+                });
+                //event
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle_" + ix + ".id}",
+                        DefType = "EVENT",
+                        Format = "XML",
+                        Source = eItem.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_event_" + ix
+                });
+            }
+
+            var content = new StringContent(JsonSerializer.Serialize(compositeRequest), Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(_sfUrl + "tooling/composite", content).Result;
+            return new SalesforceResult()
+            {
+                StatusCode = response.StatusCode,
+                BodyContent = response.Content.ReadAsStringAsync().Result
+            };
+        }
+
         public SalesforceResult UploadComponent(ConfigurationModel model)
         {
             HttpClient client = new HttpClient();
@@ -267,6 +326,18 @@ namespace deploy2.org.com.Classes
                 }
                 
             }
+
+
+            if (ConfigFile.events != null)
+            {
+                model.Events = new List<GithubFile>();
+                foreach (var eventName in ConfigFile.events)
+                {
+                    model.Events.Add(RetrieveRepositoryFile(_ghOrg, _ghRepo, eventName));
+                }
+
+            }
+
             if (ConfigFile.bundle_details != null)
             {
                 if (!string.IsNullOrEmpty(ConfigFile.bundle_details.component))
