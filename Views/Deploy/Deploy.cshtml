@@ -1,0 +1,64 @@
+﻿@model deploy2.org.com.Classes.DeployModel
+@{
+
+}
+
+<div class="row">
+    <div class="col-sm">
+        <div class="markdown-body">
+
+            <h1 class="font-weight-light">Try Me</h1>
+
+            <h5>3. Deployment Result</h5>
+
+            <div class="mt-2 mb-2">
+                <pre id="output" class="p-2 border">...</pre>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+@section scripts  {
+    <script>
+        $(function () {
+            var opt = $("#output").html('Initializing...\n'),
+                apex = @Html.Raw(Model.configurationModel.ApexClass == null ? "[]" : Json.Serialize(Model.configurationModel.ApexClass.Select(C => C.name)).ToString()),
+                bundle = @(Model.configurationFile.bundle_details != null ? "true" : "false");
+
+            function doApex(ix) {
+                opt.append('\nDeploying Apex Class [' + apex[ix] + '] - ... ');
+                $.post('/deploy/deployitem', { type: 'apex', name: apex[ix] }, function (r) {
+                    console.log(r.statusCode);
+                    if (r.statusCode == 201) {
+                        opt.append('Created!\n');
+                        if (++ix < apex.length) {
+                            doApex(ix);
+                        } else if (bundle){
+                            doBundle();
+                        }
+                    } else {
+                        opt.append('Error (' + r.statusCode + '):\n' + r.bodyContent + '\n\nProcess completed with errors.');
+                    }
+                });
+            }
+
+            function doBundle() {
+                opt.append('\nDeploying Component Bundle - ... ');
+                $.post('/deploy/deployitem', { type: 'bundle', name: null }, function (r) {
+                    console.log(r.statusCode);
+                    if (r.statusCode == 200) {
+                        opt.append('Created!\n\nProcess completed!');
+                    } else {
+                        opt.append(' Error (' + r.statusCode + '):\n' + r.bodyContent + '\n\nProcess completed with errors.');
+                    }
+                });
+            }
+
+            if (apex.length > 0) {
+                doApex(0);
+            }
+        });
+    </script>
+}

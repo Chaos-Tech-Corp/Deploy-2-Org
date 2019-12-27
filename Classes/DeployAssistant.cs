@@ -1,4 +1,5 @@
-﻿using System;
+﻿using deploy2.org.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -44,33 +45,182 @@ namespace deploy2.org.com.Classes
             _ghRepo = ghRepos;
         }
 
-        public void UploadComponent()
+        public SalesforceResult UploadComponent(ConfigurationModel model)
         {
-            var configFile = RetrieveGithubConfig();
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("User-Agent", "Deploy2Org");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + _sfToken);
 
-            //first: upload the apex class that will be used later in the component
-            //if (!string.IsNullOrEmpty(configFile.apex_class))
-            //{
-            //    //retrieve the class
-            //    var apexFile = RetrieveRepositoryFile(_ghOrg, _ghRepo, configFile.apex_class);
-            //    var fileContent = apexFile.fileContent();
-            //    //get the class name from the code
-            //    var className = Regex.Split(fileContent, " class ", RegexOptions.IgnoreCase)[1].Split('{')[0].Trim();
-            //    var newClass = new SalesforceApexClass()
-            //    {   
-            //        Body = fileContent,
-            //        ApiVersion = double.Parse(configFile.api_version.Substring(1)), //remove the v
-            //        Status ="Active",
-            //        Name = className
-            //    };
-            //    if (!CreateApexClass(newClass))
-            //    {
-            //        throw new Exception("Cannot create apex class.");
-            //    }
-            //}
+            var compositeRequest = new SalesforceCompositeRequest()
+            {
+                allOrNone = true,
+                compositeRequest = new List<CompositeSubrequest>()
+            };
+
+
+            var bundleBody = new AuraDefinitionBundle()
+            {
+                ApiVersion = Double.Parse(model.APIVersion.Replace("v", "")),
+                Description = model.ComponentName,
+                DeveloperName = model.ComponentName,
+                MasterLabel = model.ComponentName
+            };
+            compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+            {
+                method = "POST",
+                body = bundleBody,
+                url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinitionBundle/",
+                referenceId = "aura_bundle"
+            });
+
+            //component
+            compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+            {
+                method = "POST",
+                body = new AuraDefinition()
+                {
+                    AuraDefinitionBundleId = "@{aura_bundle.id}",
+                    DefType = "COMPONENT",
+                    Format = "XML",
+                    Source = model.Component.fileContent()
+                },
+                url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                referenceId = "aura_component"
+            });
+            //controller
+            if (model.Controller != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "CONTROLLER",
+                        Format = "JS",
+                        Source = model.Controller.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_controller"
+                });
+            }
+            //helper
+            if (model.Helper != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "HELPER",
+                        Format = "JS",
+                        Source = model.Helper.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_helper"
+                });
+            }
+            //style
+            if (model.Style != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "STYLE",
+                        Format = "CSS",
+                        Source = model.Style.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_style"
+                });
+            }
+            //documentation
+            if (model.Documentation != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "DOCUMENTATION",
+                        Format = "XML",
+                        Source = model.Documentation.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_documentation"
+                });
+            }
+            //renderer
+            if (model.Renderer != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "RENDERER",
+                        Format = "JS",
+                        Source = model.Renderer.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_renderer"
+                });
+            }
+            //design
+            if (model.Design != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "DESIGN",
+                        Format = "XML",
+                        Source = model.Design.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_design"
+                });
+            }
+            //design
+            if (model.SVG != null)
+            {
+                compositeRequest.compositeRequest.Add(new CompositeSubrequest()
+                {
+                    method = "POST",
+                    body = new AuraDefinition()
+                    {
+                        AuraDefinitionBundleId = "@{aura_bundle.id}",
+                        DefType = "SVG",
+                        Format = "XML",
+                        Source = model.SVG.fileContent()
+                    },
+                    url = "/services/data/" + _sfVersion + "/tooling/sobjects/AuraDefinition/",
+                    referenceId = "aura_svg"
+                });
+            }
+
+
+            var content = new StringContent(JsonSerializer.Serialize(compositeRequest), Encoding.UTF8, "application/json");
+
+            var response = client.PostAsync(_sfUrl + "tooling/composite", content).Result;
+            //need to parse the response to identify errors
+            return new SalesforceResult()
+            {
+                StatusCode = response.StatusCode,
+                BodyContent = response.Content.ReadAsStringAsync().Result
+            };
         }
 
-        public bool CreateApexClass(SalesforceApexClass apexClass)
+        public SalesforceResult CreateApexClass(SalesforceApexClass apexClass)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -80,7 +230,11 @@ namespace deploy2.org.com.Classes
             var content = new StringContent(JsonSerializer.Serialize(apexClass), Encoding.UTF8, "application/json");
 
             var response = client.PostAsync(_sfUrl + "sobjects/ApexClass", content).Result;
-            return response.StatusCode == System.Net.HttpStatusCode.Created;
+            return new SalesforceResult()
+            {
+                StatusCode = response.StatusCode,
+                BodyContent = response.Content.ReadAsStringAsync().Result
+            };
 
         }
 

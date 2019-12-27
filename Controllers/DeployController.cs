@@ -27,72 +27,26 @@ namespace deploy2.org.com.Controllers
         {
 
             string referer = Request.Headers["Referer"].ToString();
-            referer = "https://github.com/Chaos-Tech-Corp/Modal-Confirmation";
-            var segments = new Uri(referer).LocalPath.Split('/');
-            var ghOrg = segments[1];
-            var ghRepo = segments[2];
+            //referer = "https://github.com/Chaos-Tech-Corp/Modal-Confirmation";
+            //var segments = new Uri(referer).LocalPath.Split('/');
+            //var ghOrg = segments[1];
+            //var ghRepo = segments[2];
 
-            //var existing_details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
+            ////var existing_details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
 
-            var details = new DeployModel();
-            details.ghOrg = ghOrg;
-            details.ghRepo = ghRepo;
-            details.ghReferer = referer;
+            //var details = new DeployModel();
+            //details.ghOrg = ghOrg;
+            //details.ghRepo = ghRepo;
+            //details.ghReferer = referer;
 
-            HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", details);
+            //HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", details);
 
-            //authenticate github first
-            return Redirect("/signin-gh");
+            ////authenticate github first
+            //return Redirect("/signin-gh");
+            return View();
         }
 
-        public IActionResult Preview()
-        {
 
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Redirect("/Authentication-Error");
-            }
-
-            var existing_details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
-
-            if (existing_details == null)
-            {
-                return Redirect("/Session-Error");
-            }
-
-            if (User.Claims.Any(C => C.Type == "urn:github:name"))
-            {
-                string accessToken = HttpContext.GetTokenAsync("access_token").Result;
-                existing_details.ghToken = accessToken;
-            }
-
-            //retrieve the Github Configuration and detials
-            var deploy = new DeployAssistant(existing_details);
-
-            var configFile = deploy.RetrieveGithubConfig();
-
-            existing_details.configurationFile = configFile;
-
-            HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", existing_details);
-
-            return View(configFile);
-        }
-
-        public PartialViewResult Validate()
-        {
-            var existing_details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
-
-            //retrieve the Github Configuration and detials
-            var deploy = new DeployAssistant(existing_details);
-
-            var componentModel = deploy.Validate(existing_details.configurationFile);
-
-            existing_details.configurationModel = componentModel;
-
-            HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", existing_details);
-
-            return PartialView("_Validate", existing_details);
-        }
 
         [HttpGet]
         public IActionResult TryMe([FromQuery] string template)
@@ -138,8 +92,6 @@ namespace deploy2.org.com.Controllers
             details.ghRepo = ghRepo;
             details.ghReferer = template;
 
-            //retrieve the Github Configuration and detials
-            var deploy = new DeployAssistant(details);
             try
             {
                 if (User.Claims.Any(C => C.Type == "urn:github:name"))
@@ -148,6 +100,8 @@ namespace deploy2.org.com.Controllers
                     details.ghToken = accessToken;
                 }
 
+                //retrieve the Github Configuration and detials
+                var deploy = new DeployAssistant(details);
                 var config = deploy.RetrieveGithubConfig();
 
                 details.configurationFile = config;
@@ -186,6 +140,9 @@ namespace deploy2.org.com.Controllers
 
             var componentModel = deploy.Validate(existing_details.configurationFile);
 
+            existing_details.configurationModel = componentModel;
+            HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", existing_details);
+
             //differentiate the validated model with the configuration file
             ConfigurationFile diff = new ConfigurationFile();
             if (existing_details.configurationFile.apex_class != null)
@@ -219,26 +176,69 @@ namespace deploy2.org.com.Controllers
             return new JsonResult(diff);
         }
 
-        [HttpPost]
+
         public IActionResult Deploy(string environment)
         {
             environment = environment ?? "test";
 
-            if (User.Claims.Any(C => C.Type == "urn:salesforce:rest_url"))
-            {
-                var details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
+            var details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
 
-                details.sfUrl = User.Claims.First(C => C.Type == "urn:salesforce:rest_url").Value;
-                details.sfToken = HttpContext.GetTokenAsync("access_token").Result;
-
-                HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", details);
-            } else
+            if (string.IsNullOrEmpty(details.sfToken))
             {
-                //authenticate 
-                return Redirect("/signin-sf?environment=" + environment + "&redirect=/deploy/deploy");
+                if (User.Claims.Any(C => C.Type == "urn:salesforce:rest_url"))
+                {
+                    details.sfVersion = "v47.0";
+                    details.sfUrl = User.Claims.First(C => C.Type == "urn:salesforce:rest_url").Value;
+                    details.sfToken = HttpContext.GetTokenAsync("access_token").Result;
+
+                    HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", details);
+
+                    //sign out - no longer need to keep the credentials
+                    SignOut(new AuthenticationProperties { RedirectUri = "/" },
+                        Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+                }
+                else
+                {
+                    //authenticate 
+                    return Redirect("/signin-sf?environment=" + environment + "&redirect=/deploy/deploy");
+                }
+
             }
 
-            return View();
+            return View(details);
         }
+
+        [HttpPost]
+        public JsonResult DeployItem(string type, string name)
+        {
+            var result = new deploy2.org.Classes.SalesforceResult();
+            try
+            {
+                var details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
+                var deploy = new DeployAssistant(details);
+
+                if (type == "apex")
+                {
+                    result = deploy.CreateApexClass(new SalesforceApexClass()
+                    {
+                        ApiVersion = Double.Parse(details.configurationFile.api_version.Replace("v","")),
+                        Name = name,
+                        Body = details.configurationModel.ApexClass.First(C => C.name == name).fileContent(),
+                        Status = "Active"
+                    });
+                }
+                else if (type == "bundle")
+                {
+                    result = deploy.UploadComponent(details.configurationModel);
+                }
+            } catch(Exception ex)
+            {
+                result.StatusCode = System.Net.HttpStatusCode.InternalServerError;
+                result.BodyContent = ex.Message;
+            }
+
+            return new JsonResult(result);
+        }
+
     }
 }

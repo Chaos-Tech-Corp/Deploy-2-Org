@@ -46,6 +46,7 @@ namespace deploy2.org.com
                 options.ClientId = "3MVG9GYWKbMgBvbw5uycR_9sQUwY1YIcLEyP.wruTS5Qw2rH5d1IB.n3a085pbZfql7s22OwjHOEYpKURQFja";
                 options.ClientSecret = "2D189C480A0BBE49FA6EA9B6A9CB7D1226769FD8E2C9C24445D8F7505F1AF6B6";
                 options.SaveTokens = true;
+                options.CallbackPath = "/signin-salesforceproduction";
                 options.Environment = AspNet.Security.OAuth.Salesforce.SalesforceAuthenticationEnvironment.Production;
             })
             .AddSalesforce("SalesforceTest", options =>
@@ -53,6 +54,7 @@ namespace deploy2.org.com
                 options.ClientId = "3MVG9GYWKbMgBvbw5uycR_9sQUwY1YIcLEyP.wruTS5Qw2rH5d1IB.n3a085pbZfql7s22OwjHOEYpKURQFja";
                 options.ClientSecret = "2D189C480A0BBE49FA6EA9B6A9CB7D1226769FD8E2C9C24445D8F7505F1AF6B6";
                 options.SaveTokens = true;
+                options.CallbackPath = "/signin-salesforcetest";
                 options.Environment = AspNet.Security.OAuth.Salesforce.SalesforceAuthenticationEnvironment.Test;
             });
 
