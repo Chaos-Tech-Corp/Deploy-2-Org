@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "deploy2.org | GitHub to Salesforce";
 }
 
     <div class="jumbotron">
@@ -49,7 +49,20 @@
         </pre>
 
         <h2>deploy2.org</h2>
-        <p></p>
+        <p>First step is to validate the <code>.deploy2org.js</code> file and that all the files exists and can be retrieved.</p>
+        <img src="~/img/deploy_step_2.png" style="max-width:100%;" />
+        <p>Then the application will connect to your Organization's Sandbox to start deploying the data. It uses a Connected Applicaiton named <code>Deploy2Org</code> and will require the user permission.</p>
+        <p>You can find information about how to check your Connected Apps <a href="https://help.salesforce.com/articleView?id=remoteaccess_request_manage.htm" target="_blank">here</a>.</p>
+        <p>Once the permission is granted tt will start by creating the Apex Classes (if any), followed by the Ligtning Component Bundle.</p>
+        <p>Apex Classes are being generated one by one (<i>pending work to validated if they exist before uploading them</i>) using a <a href="https://developer.salesforce.com/docs/api-explorer/sobject/ApexClass/post-apexclass" target="_blank">REST API</a> call:</p>
+        <pre>
+POST /services/data/vXX.X/sobjects/ApexClass
+</pre>
+        <p>The Component Bundle is created all at once using a <a href="https://developer.salesforce.com/docs/atlas.en-us.api_tooling.meta/api_tooling/tooling_resources_composite_composite.htm" target="_blank">Composite Request</a> to the Tooling REST API:</p>
+        <pre>
+POST /services/data/vXX.X/tooling/composite
+</pre>
+        <img src="~/img/deploy_step_3.png" style="max-width:100%;" />
     </div>
 
 
