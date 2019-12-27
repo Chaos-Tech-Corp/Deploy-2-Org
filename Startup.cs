@@ -41,11 +41,19 @@ namespace deploy2.org.com
                 options.ClientSecret = "76c106eab538718d136354afb6f0a41effb2927c";
                 options.SaveTokens = true;
             })
-            .AddSalesforce(options =>
+            .AddSalesforce("SalesforceProduction", options =>
             {
                 options.ClientId = "3MVG9GYWKbMgBvbw5uycR_9sQUwY1YIcLEyP.wruTS5Qw2rH5d1IB.n3a085pbZfql7s22OwjHOEYpKURQFja";
                 options.ClientSecret = "2D189C480A0BBE49FA6EA9B6A9CB7D1226769FD8E2C9C24445D8F7505F1AF6B6";
                 options.SaveTokens = true;
+                options.Environment = AspNet.Security.OAuth.Salesforce.SalesforceAuthenticationEnvironment.Production;
+            })
+            .AddSalesforce("SalesforceTest", options =>
+            {
+                options.ClientId = "3MVG9GYWKbMgBvbw5uycR_9sQUwY1YIcLEyP.wruTS5Qw2rH5d1IB.n3a085pbZfql7s22OwjHOEYpKURQFja";
+                options.ClientSecret = "2D189C480A0BBE49FA6EA9B6A9CB7D1226769FD8E2C9C24445D8F7505F1AF6B6";
+                options.SaveTokens = true;
+                options.Environment = AspNet.Security.OAuth.Salesforce.SalesforceAuthenticationEnvironment.Test;
             });
 
             services.AddDistributedMemoryCache();

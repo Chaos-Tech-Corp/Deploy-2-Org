@@ -142,6 +142,12 @@ namespace deploy2.org.com.Controllers
             var deploy = new DeployAssistant(details);
             try
             {
+                if (User.Claims.Any(C => C.Type == "urn:github:name"))
+                {
+                    string accessToken = HttpContext.GetTokenAsync("access_token").Result;
+                    details.ghToken = accessToken;
+                }
+
                 var config = deploy.RetrieveGithubConfig();
 
                 details.configurationFile = config;
@@ -152,10 +158,10 @@ namespace deploy2.org.com.Controllers
 
             } catch (HttpRequestException ex)
             {
-                if (ex.Message == System.Net.HttpStatusCode.Unauthorized.ToString())
+                if (ex.Message == System.Net.HttpStatusCode.Unauthorized.ToString() || ex.Message == System.Net.HttpStatusCode.Forbidden.ToString())
                 {
                     //authenticate 
-                    return Redirect("/signin-gh?redirect=/tryme?template=" + template);
+                    return Redirect("/signin-gh?redirect=/deploy/tryme?template=" + template);
                 } else
                 {
                     ViewBag.Error = "Couldn't retrieve the file, server returned a " + ex.Message + " error.";
@@ -211,6 +217,28 @@ namespace deploy2.org.com.Controllers
             }
 
             return new JsonResult(diff);
+        }
+
+        [HttpPost]
+        public IActionResult Deploy(string environment)
+        {
+            environment = environment ?? "test";
+
+            if (User.Claims.Any(C => C.Type == "urn:salesforce:rest_url"))
+            {
+                var details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
+
+                details.sfUrl = User.Claims.First(C => C.Type == "urn:salesforce:rest_url").Value;
+                details.sfToken = HttpContext.GetTokenAsync("access_token").Result;
+
+                HttpContext.Session.Set<DeployModel>("DEPLOY_MODEL", details);
+            } else
+            {
+                //authenticate 
+                return Redirect("/signin-sf?environment=" + environment + "&redirect=/deploy/deploy");
+            }
+
+            return View();
         }
     }
 }

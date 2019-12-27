@@ -20,38 +20,12 @@ namespace deploy2.org.com.Controllers
             _logger = logger;
         }
 
-        private static string ghTokenId;
-        private static string sfTokenId;
-        private static string sfUrl;
 
-        public async Task<IActionResult> IndexAsync()
+        public IActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.Claims.Any(C => C.Type == "urn:salesforce:rest_url"))
-                {
-                    string accessToken = await HttpContext.GetTokenAsync("access_token");
-                    sfTokenId = accessToken;
-                    sfUrl = User.Claims.First(C => C.Type == "urn:salesforce:rest_url").Value;
-                }
-                if (User.Claims.Any(C => C.Type == "urn:github:name"))
-                {
-                    string accessToken = await HttpContext.GetTokenAsync("access_token");
-                    ghTokenId = accessToken;
-                }
-            }
-
             return View();
         }
 
-        public JsonResult CreateClass()
-        {
-            deploy2.org.com.Classes.DeployAssistant g2o = new deploy2.org.com.Classes.DeployAssistant(sfTokenId ?? "", "v47.0", sfUrl ?? "",  ghTokenId, "Chaos-Tech-Corp", "Github-2-Org");
-
-            g2o.UploadComponent();
-
-            return new JsonResult(new { Cool = true });
-        }
 
         public IActionResult About()
         {

@@ -11,9 +11,27 @@ namespace deploy2.org.com.Controllers
     {
 
         [HttpGet("~/signin-gh")]
-        public async Task<IActionResult> SignIn(string redirect)
+        public async Task<IActionResult> SignInGithub(string redirect)
         {
             string provider = "GitHub";
+
+            if (!await HttpContext.IsProviderSupportedAsync(provider))
+            {
+                return BadRequest();
+            }
+
+            // Instruct the middleware corresponding to the requested external identity
+            // provider to redirect the user agent to its own authorization endpoint.
+            // Note: the authenticationScheme parameter must match the value configured in Startup.cs
+            return Challenge(new AuthenticationProperties { RedirectUri = redirect ?? "/" }, provider);
+        }
+
+        [HttpGet("~/signin-sf")]
+        public async Task<IActionResult> SignInSalesforce(string redirect, string environment)
+        {
+            environment = environment ?? string.Empty;
+
+            string provider = environment.Trim().ToLower() == "test" ? "SalesforceTest" : "SalesforceProduction";
 
             if (!await HttpContext.IsProviderSupportedAsync(provider))
             {
