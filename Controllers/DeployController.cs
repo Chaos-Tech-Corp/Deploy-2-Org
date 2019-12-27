@@ -23,10 +23,27 @@ namespace deploy2.org.com.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string template)
         {
-
+            if (!string.IsNullOrEmpty(template))
+            {
+                if (!template.ToLower().StartsWith("https://github.com/"))
+                {
+                    template = "https://github.com/" + template;
+                }
+                return Redirect("/deploy/tryme?template=" + template);
+            }
             string referer = Request.Headers["Referer"].ToString();
+            if (!string.IsNullOrEmpty(referer))
+            {
+                if (referer.ToLower().StartsWith("https://github.com/"))
+                {
+                    return Redirect("/deploy/tryme?template=" + referer);
+                }
+            }
+
+            return Redirect("/");
+            //string referer = Request.Headers["Referer"].ToString();
             //referer = "https://github.com/Chaos-Tech-Corp/Modal-Confirmation";
             //var segments = new Uri(referer).LocalPath.Split('/');
             //var ghOrg = segments[1];
@@ -43,7 +60,7 @@ namespace deploy2.org.com.Controllers
 
             ////authenticate github first
             //return Redirect("/signin-gh");
-            return View();
+            //return View();
         }
 
 
