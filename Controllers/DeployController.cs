@@ -218,6 +218,11 @@ namespace deploy2.org.com.Controllers
 
             var details = HttpContext.Session.Get<DeployModel>("DEPLOY_MODEL");
 
+            if (details == null)
+            {
+                return Redirect("/");
+            }
+
             if (string.IsNullOrEmpty(details.sfToken))
             {
                 if (User.Claims.Any(C => C.Type == "urn:salesforce:rest_url"))
