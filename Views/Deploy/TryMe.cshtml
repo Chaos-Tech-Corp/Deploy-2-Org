@@ -51,7 +51,8 @@
 
                                     <dt class="col-sm-4">API Version:</dt>
                                     <dd class="col-sm-8">@Model.api_version</dd>
-
+                                    @if (Model.apex_class != null)
+                                    {
                                     @foreach (var cName in Model.apex_class)
                                     {
                                         ix++;
@@ -59,7 +60,7 @@
                                         <dd class="col-sm-7">@(System.IO.Path.GetFileName(cName))</dd>
                                         <dt class="col-sm-1" id="apex-@ix"><div class="spinner-border spinner-border-sm text-secondary" role="status"></div></dt>
                                     }
-
+                                    }
                                 </dl>
                                 <h6>Component Bundle</h6>
                                 <dl class="row">
